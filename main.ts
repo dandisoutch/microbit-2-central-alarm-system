@@ -1,6 +1,6 @@
 function distress_signal () {
-    time_passed = control.millis()
-    while (control.millis() - time_passed < 30000 && alarm) {
+    set_time = control.millis()
+    while (control.millis() - set_time < 30000 && alarm) {
         music.play(music.tonePlayable(175, music.beat(BeatFraction.Whole)), music.PlaybackMode.InBackground)
         basic.showLeds(`
             # # # # #
@@ -40,7 +40,7 @@ radio.onReceivedString(function (receivedString) {
 input.onButtonPressed(Button.B, function () {
     radio.sendString("DETECTED")
 })
-let time_passed = 0
+let set_time = 0
 let alarm = false
 let turned_on = false
 turned_on = false
