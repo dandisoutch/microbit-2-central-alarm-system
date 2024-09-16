@@ -1,6 +1,6 @@
 function distress_signal () {
-    set_time = control.millis()
-    while (control.millis() - set_time < 30000 && alarm) {
+    time_passed = control.millis()
+    while (control.millis() - time_passed < 30000 && alarm) {
         music.play(music.tonePlayable(175, music.beat(BeatFraction.Whole)), music.PlaybackMode.InBackground)
         basic.showLeds(`
             # # # # #
@@ -14,9 +14,7 @@ function distress_signal () {
     }
     if (alarm) {
         radio.setGroup(66)
-        // Skickar Signal till Microbit 4 (police)
-        radio.sendString("INTRUSION_DETECTED")
-        basic.showIcon(IconNames.Sad)
+        radio.sendNumber(4)
         radio.setGroup(65)
     }
 }
@@ -30,8 +28,16 @@ radio.onReceivedString(function (receivedString) {
         if (turned_on) {
             turned_on = false
             alarm = false
+            basic.clearScreen()
         } else {
             turned_on = true
+            basic.showLeds(`
+                . . . . .
+                . . . . .
+                . . # . .
+                . . . . .
+                . . . . .
+                `)
         }
     } else if (receivedString == "DETECTED" && turned_on) {
         alarm = true
@@ -40,7 +46,7 @@ radio.onReceivedString(function (receivedString) {
 input.onButtonPressed(Button.B, function () {
     radio.sendString("DETECTED")
 })
-let set_time = 0
+let time_passed = 0
 let alarm = false
 let turned_on = false
 turned_on = false
